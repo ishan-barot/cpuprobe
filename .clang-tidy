@@ -1,0 +1,11 @@
+Checks: >
+  -*,
+  bugprone-*,
+  performance-*,
+  modernize-use-nullptr,
+  modernize-use-override,
+  readability-braces-around-statements,
+  -bugprone-easily-swappable-parameters,
+  -readability-braces-around-statements
+WarningsAsErrors: ''
+HeaderFilterRegex: 'include/cpuprobe/.*'

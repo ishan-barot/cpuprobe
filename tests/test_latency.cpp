@@ -1,8 +1,9 @@
-#include "cpuprobe/latency.hpp"
-
 #include <gtest/gtest.h>
+
 #include <cstdint>
 #include <vector>
+
+#include "cpuprobe/latency.hpp"
 
 using namespace cpuprobe;
 

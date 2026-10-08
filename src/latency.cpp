@@ -1,11 +1,12 @@
 #include "cpuprobe/latency.hpp"
-#include "cpuprobe/util.hpp"
 
 #include <chrono>
 #include <cstdlib>
 #include <memory>
 #include <new>
 #include <numeric>
+
+#include "cpuprobe/util.hpp"
 
 namespace cpuprobe {
 
@@ -20,7 +21,9 @@ std::vector<std::size_t> sattolo(std::size_t n, std::mt19937_64& rng) {
 }
 
 namespace {
-struct FreeDeleter { void operator()(void* p) const { std::free(p); } };
+struct FreeDeleter {
+    void operator()(void* p) const { std::free(p); }
+};
 using clk = std::chrono::steady_clock;
 
 double chase_ns(Node* start, std::size_t iters) {

@@ -1,8 +1,9 @@
 #include "cpuprobe/util.hpp"
 
+#include <sched.h>
+
 #include <algorithm>
 #include <cctype>
-#include <sched.h>
 #include <stdexcept>
 
 namespace cpuprobe {

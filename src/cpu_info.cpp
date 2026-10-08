@@ -1,8 +1,9 @@
 #include "cpuprobe/cpu_info.hpp"
-#include "cpuprobe/util.hpp"
 
 #include <filesystem>
 #include <fstream>
+
+#include "cpuprobe/util.hpp"
 
 namespace cpuprobe {
 

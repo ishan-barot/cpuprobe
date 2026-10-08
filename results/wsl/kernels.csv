@@ -1,0 +1,11 @@
+kernel,variant,ms,cycles,instructions,ipc,l1d_misses,llc_misses,branch_misses,multiplexed
+rowcol,row_major,2.80403,0,0,0,0,0,0,0
+rowcol,col_major,67.2377,0,0,0,0,0,0,0
+branch,branchy_random,24.2075,0,0,0,0,0,0,0
+branch,branchy_sorted,3.26635,0,0,0,0,0,0,0
+branch,branchless_random,1.66831,0,0,0,0,0,0,0
+branch,branchless_sorted,1.69563,0,0,0,0,0,0,0
+layout,aos,11.1585,0,0,0,0,0,0,0
+layout,soa,5.71462,0,0,0,0,0,0,0
+falseshare,packed,638.239,0,0,0,0,0,0,0
+falseshare,padded,43.8513,0,0,0,0,0,0,0

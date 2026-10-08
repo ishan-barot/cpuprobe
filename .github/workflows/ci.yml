@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+        include:
+          - compiler: gcc
+            cxx: g++
+          - compiler: clang
+            cxx: clang++
+    name: ${{ matrix.compiler }} (asan + ubsan)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCPUPROBE_SANITIZE=ON -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+
+      - name: build
+        run: cmake --build build -j
+
+      - name: unit tests
+        run: ./build/cpuprobe_tests
+
+      # github runners are vms with no pmu, so this also checks that we fall back cleanly
+      - name: smoke run
+        run: |
+          ./build/cpuprobe info
+          ./build/cpuprobe latency --quick --cpu 0
+          ./build/cpuprobe kernel all --quick --cpu 0 --cpus 0,1 --counters
+
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: clang-format check
+        run: clang-format --dry-run --Werror $(git ls-files '*.cpp' '*.hpp')

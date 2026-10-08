@@ -1,7 +1,8 @@
-#include "cpuprobe/util.hpp"
-
 #include <gtest/gtest.h>
+
 #include <stdexcept>
+
+#include "cpuprobe/util.hpp"
 
 using namespace cpuprobe;
 
