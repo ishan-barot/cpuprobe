@@ -2,7 +2,7 @@
   "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
   "kernel": "6.6.87.2-microsoft-standard-WSL2",
   "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
-  "git_commit": "34c7346",
+  "git_commit": "06fddd6",
   "governor": "n/a",
   "perf_event_paranoid": "2",
   "quick": false

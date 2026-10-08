@@ -9,7 +9,7 @@ namespace cpuprobe {
 enum class Event {
     Cycles,
     Instructions,
-    CacheMisses,  // last level cache misses, maps to different raw events on amd vs intel
+    CacheMisses,  // last level cache misses, maps to different raw events depending on the cpu vendor
     BranchMisses,
     L1DMisses,  // l1 data cache read misses
 };
