@@ -1,5 +1,5 @@
 # cpuprobe
-
+[![ci](https://github.com/ishan-barot/cpuprobe/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-barot/cpuprobe/actions/workflows/ci.yml)
 A C++ tool that measures how your CPU's memory hierarchy actually behaves (cache sizes, latencies, miss rates, IPC) using microbenchmarks and Linux hardware performance counters, with Python automation to sweep configs and plot results.
 
 ![latency staircase](results/latency_wsl.png)
