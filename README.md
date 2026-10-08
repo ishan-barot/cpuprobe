@@ -3,8 +3,7 @@
 
 A C++ tool that measures how your CPU's memory hierarchy actually behaves (cache sizes, latencies, miss rates, IPC) using microbenchmarks and Linux hardware performance counters, with Python automation to sweep configs and plot results.
 
-I built this because I wanted to see the stuff from my computer architecture classes on my own machine instead of just reading about it. Turns out you can, and the hardware counters agree with the textbook almost exactly.
-
+I built this because I wanted to expand on my interests from my computer architecture classes on my own machine instead of just reading about it. Turns out you can, and the hardware counters agree with the textbook.
 ![latency staircase](results/wsl/latency.png)
 
 ## Key findings
