@@ -1,0 +1,10 @@
+# commit=cf5ded3
+# compute_capability=8.9
+# cuda_runtime=13.3
+# driver=13.4
+# gpu=NVIDIA GeForce RTX 4070
+benchmark,variant,size,reps,median_ms,p05_ms,p95_ms,gbps,gflops
+transpose,copy,2048,30,0.021504,0.0213904,0.0222576,1560.38,0
+transpose,naive,2048,30,0.244784,0.244683,0.24576,137.078,0
+transpose,tiled,2048,30,0.04608,0.04608,0.047104,728.178,0
+transpose,tiled_padded,2048,30,0.021504,0.02048,0.0219776,1560.38,0

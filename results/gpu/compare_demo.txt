@@ -1,0 +1,7 @@
+bench      variant          size      base_ms   current_ms    change  verdict
+transpose  copy             2048        0.022        0.022     +0.0%  ok
+transpose  naive            2048        0.245        0.248     +1.2%  ok
+transpose  tiled            2048        0.046        0.047     +2.0%  ok
+transpose  tiled_padded     2048        0.022        0.047   +118.6%  REGRESSION
+
+threshold 10.0%. regression = slower by more than that AND the new p05 is above the old p95

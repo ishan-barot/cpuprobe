@@ -36,6 +36,24 @@ jobs:
           ./build/cpuprobe latency --quick --cpu 0
           ./build/cpuprobe kernel all --quick --cpu 0 --cpus 0,1 --counters
 
+  # github has no gpu runners on the free plan, so this only proves the cuda backend compiles
+  # and links against a real toolkit. the gpu tests themselves run on my machine
+  cuda-build:
+    runs-on: ubuntu-24.04
+    container: nvidia/cuda:13.0.0-devel-ubuntu24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: install build tools
+        run: apt-get update && apt-get install -y --no-install-recommends cmake git g++ make
+      - name: configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCPUPROBE_ENABLE_CUDA=ON
+      - name: build
+        run: cmake --build build -j
+      - name: cpu tests still pass in the cuda build
+        run: ./build/cpuprobe_tests
+      - name: gpu tests skip cleanly without a gpu
+        run: ./build/cpuprobe_gpu_tests
+
   format:
     runs-on: ubuntu-24.04
     steps:

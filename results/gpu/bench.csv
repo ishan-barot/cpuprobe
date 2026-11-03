@@ -1,0 +1,14 @@
+# commit=cf5ded3
+# compute_capability=8.9
+# cuda_runtime=13.3
+# driver=13.4
+# gpu=NVIDIA GeForce RTX 4070
+benchmark,variant,size,reps,median_ms,p05_ms,p95_ms,gbps,gflops
+transpose,copy,4096,30,0.293888,0.292442,0.337706,456.697,0
+transpose,naive,4096,30,1.0168,1.01527,1.0199,132,0
+transpose,tiled,4096,30,0.32256,0.319968,0.392755,416.102,0
+transpose,tiled_padded,4096,30,0.321936,0.319949,0.38912,416.908,0
+sgemm,naive,4096,10,86.8685,86.7628,87.9964,0,1582.15
+sgemm,smem_tiled,4096,10,61.9334,61.9282,62.6443,0,2219.14
+sgemm,blocktiled_2d,4096,10,13.4052,13.3174,14.0343,0,10252.7
+sgemm,cublas,4096,10,5.95894,5.87935,6.7966,0,23064.3

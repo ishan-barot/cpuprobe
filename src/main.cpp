@@ -7,7 +7,12 @@
 #include "cpuprobe/cpu_info.hpp"
 #include "cpuprobe/kernels.hpp"
 #include "cpuprobe/latency.hpp"
+#include "cpuprobe/regression.hpp"
 #include "cpuprobe/util.hpp"
+
+#ifdef CPUPROBE_HAS_CUDA
+#include "cpuprobe/gpu/gpu.hpp"
+#endif
 
 using namespace cpuprobe;
 
@@ -19,7 +24,9 @@ static void usage() {
            "FILE]\n"
            "  cpuprobe kernel <rowcol|branch|layout|falseshare|all> [--size 4096] [--n 10M]\n"
            "                  [--threads 2] [--iters 100M] [--cpus 2,4] [--cpu 2] [--reps 5]\n"
-           "                  [--counters] [--quick] [--csv FILE]\n";
+           "                  [--counters] [--quick] [--csv FILE]\n"
+           "  cpuprobe gpu <info|bench|latency|trace> ...   (needs a cuda build)\n"
+           "  cpuprobe compare --baseline OLD.csv --current NEW.csv [--threshold 10]\n";
 }
 
 static int cmd_info() {
@@ -236,6 +243,53 @@ static int cmd_kernel(int argc, char** argv) {
     return 0;
 }
 
+// compares two `gpu bench --csv` files. exits 3 when something got reliably slower so a ci step
+// or a git bisect script can just check the exit code
+static int cmd_compare(int argc, char** argv) {
+    std::string base_path, cur_path;
+    double threshold = 10.0;
+    for (int i = 2; i < argc; ++i) {
+        std::string a = argv[i];
+        auto next = [&]() -> std::string {
+            if (i + 1 >= argc) throw std::invalid_argument("missing value for " + a);
+            return argv[++i];
+        };
+        if (a == "--baseline")
+            base_path = next();
+        else if (a == "--current")
+            cur_path = next();
+        else if (a == "--threshold")
+            threshold = std::stod(next());
+        else {
+            usage();
+            return 2;
+        }
+    }
+    if (base_path.empty() || cur_path.empty()) {
+        usage();
+        return 2;
+    }
+    auto load = [](const std::string& p) {
+        std::ifstream f(p);
+        if (!f) throw std::runtime_error("cant open " + p);
+        return read_bench_csv(f);
+    };
+    auto rep = compare(load(base_path), load(cur_path), threshold);
+
+    for (auto& w : rep.warnings) std::cerr << "warning: " << w << "\n";
+    std::printf("%-10s %-14s %6s %12s %12s %9s  %s\n", "bench", "variant", "size", "base_ms",
+                "current_ms", "change", "verdict");
+    for (auto& c : rep.rows)
+        std::printf("%-10s %-14s %6zu %12.3f %12.3f %+8.1f%%  %s\n", c.cur.benchmark.c_str(),
+                    c.cur.variant.c_str(), c.cur.size, c.base.median_ms, c.cur.median_ms,
+                    c.change_pct, to_string(c.verdict));
+    std::printf(
+        "\nthreshold %.1f%%. regression = slower by more than that AND the new p05 is above "
+        "the old p95\n",
+        threshold);
+    return rep.has_regression() ? 3 : 0;
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         usage();
@@ -246,6 +300,15 @@ int main(int argc, char** argv) {
         if (cmd == "info") return cmd_info();
         if (cmd == "latency") return cmd_latency(argc, argv);
         if (cmd == "kernel") return cmd_kernel(argc, argv);
+        if (cmd == "compare") return cmd_compare(argc, argv);
+        if (cmd == "gpu") {
+#ifdef CPUPROBE_HAS_CUDA
+            return gpu::gpu_main(argc, argv);
+#else
+            std::cerr << "this build has no gpu support. rebuild with -DCPUPROBE_ENABLE_CUDA=ON\n";
+            return 2;
+#endif
+        }
     } catch (const std::exception& e) {
         std::cerr << "error: " << e.what() << "\n";
         return 1;
