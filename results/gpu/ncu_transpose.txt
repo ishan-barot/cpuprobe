@@ -1,0 +1,89 @@
+==PROF== Connected to process 1462 (/home/ishan/code/cpuprobe/build/cpuprobe)
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+==PROF== Profiling "transpose_tiled": 0%....50%....100% - 1 pass
+bench      variant          size  median_ms     p95_ms       GB/s    GFLOP/s
+transpose  copy             2048      0.022      0.022     1544.3        0.0
+transpose  naive            2048      0.248      0.248      135.2        0.0     8.8% of copy
+transpose  tiled            2048      4.974      4.974        6.7        0.0     0.4% of copy
+transpose  tiled_padded     2048      0.022      0.022     1530.8        0.0    99.1% of copy
+
+==PROF== Disconnected from process 1462
+[1462] cpuprobe@127.0.0.1
+  void unnamed>::transpose_tiled<0>(const float *, float *, int, int) (2, 3, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %         1.39
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                     2880
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<0>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        72.92
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                  4063232
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<0>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        74.32
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                  4063232
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<0>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        76.12
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                  4063232
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<0>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        73.70
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                  4063232
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<1>(const float *, float *, int, int) (2, 3, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %         2.70
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                        0
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<1>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        90.94
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                        0
+    -------------------------------------------------------- ----------- ------------
+
+  void unnamed>::transpose_tiled<1>(const float *, float *, int, int) (64, 64, 1)x(32, 8, 1), Context 1, Stream 7, Device 0, CC 8.9
+    Section: Command line profiler metrics
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    dram__throughput.avg.pct_of_peak_sustained_elapsed                 %        92.10
+    l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum                        0
+    -------------------------------------------------------- ----------- ------------
+

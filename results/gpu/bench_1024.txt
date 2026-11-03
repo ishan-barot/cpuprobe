@@ -1,0 +1,7 @@
+bench      variant          size  median_ms     p95_ms       GB/s    GFLOP/s
+transpose  copy             1024      0.008      0.008     1024.0        0.0
+transpose  naive            1024      0.066      0.067      128.0        0.0    12.5% of copy
+transpose  tiled            1024      0.014      0.015      585.1        0.0    57.1% of copy
+transpose  tiled_padded     1024      0.008      0.008     1024.0        0.0   100.0% of copy
+
+wrote results/gpu/bench_1024.csv

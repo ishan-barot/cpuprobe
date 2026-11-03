@@ -1,0 +1,24 @@
+workload: 2048x2048 floats, 3 iterations of 4 kernels, median of 7 runs
+  untraced 50.95 ms, traced 50.57 ms, overhead -0.7%
+
+category   name                                  count   total_ms
+cuda_api   cudaMallocHost                            7     91.400
+cuda_api   cudaFreeHost                              7     45.841
+cuda_api   cudaMemcpy                               21     32.399
+memcpy     memcpy HtoD (pageable)                    7     11.616
+kernel     transpose_naive                          21      5.175
+memcpy     memcpy HtoD (pinned)                      7      4.471
+memcpy     memcpy DtoH (pinned)                      7      4.454
+cuda_api   cudaMalloc                               14      4.269
+cuda_api   cudaFree                                 14      3.337
+kernel     transpose_tiled<0>                       21      0.923
+kernel     copy_kernel                              21      0.403
+kernel     transpose_tiled<1>                       21      0.400
+cuda_api   cudaLaunchKernel                         84      0.345
+cuda_api   cudaMemset                                7      0.154
+memset     memset                                    7      0.113
+cuda_api   cudaDeviceSynchronize                     7      0.031
+cuda_api   cudaGetLastError                          7      0.002
+
+wrote 280 events (112 cpu->gpu links, 0 dropped) to results/gpu/trace.json
+open it at https://ui.perfetto.dev (drag the file in)

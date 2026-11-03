@@ -1,0 +1,13 @@
+bench      variant          size  median_ms     p95_ms       GB/s    GFLOP/s
+transpose  copy             4096      0.294      0.338      456.7        0.0
+transpose  naive            4096      1.017      1.020      132.0        0.0    28.9% of copy
+transpose  tiled            4096      0.323      0.393      416.1        0.0    91.1% of copy
+transpose  tiled_padded     4096      0.322      0.389      416.9        0.0    91.3% of copy
+
+bench      variant          size  median_ms     p95_ms       GB/s    GFLOP/s
+sgemm      naive            4096     86.868     87.996        0.0     1582.1     6.9% of cublas
+sgemm      smem_tiled       4096     61.933     62.644        0.0     2219.1     9.6% of cublas
+sgemm      blocktiled_2d    4096     13.405     14.034        0.0    10252.7    44.5% of cublas
+sgemm      cublas           4096      5.959      6.797        0.0    23064.3   100.0% of cublas
+
+wrote results/gpu/bench.csv

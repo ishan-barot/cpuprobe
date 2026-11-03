@@ -40,6 +40,25 @@ The steps land right where `/sys` says each cache ends. Latency creeps up betwee
 - 10M random bytes against a `>= 128` check means the predictor is right about half the time, so ~5M misses. Measured: 5,000,127.
 - AoS drags 320MB through the cache (5M lines) to use 40MB; SoA reads just the 40MB (625K lines). Measured: 5.0M vs 625K.
 
+## GPU: NVIDIA RTX 4070 (Ada, sm_89), CUDA 13.3 under WSL2
+![cupti trace](results/gpu/trace.png)
+
+| Experiment | Result |
+|---|---|
+| Transpose 2048², naive → tiled + padded | 11x faster, matches copy bandwidth (1.56 TB/s, L2-resident) |
+| Unpadded 32x32 tile vs padded 32x33 | 2.1x slower; Nsight Compute: 4,063,232 vs 0 shared-load bank conflicts (31 extra per warp load = 32-way) |
+| Same at 4096² (128 MB, doesn't fit the 36 MB L2) | padding makes no difference: the kernel is waiting on DRAM, which hides the conflicts |
+| SGEMM 4096², naive → smem tiled → 2D register blocking | 1.6 → 2.2 → 10.3 TFLOP/s, 44.5% of cuBLAS (23.1) |
+| Upload 16 MB, pageable vs pinned | 1.66 ms vs 0.64 ms (2.6x, 26 GB/s over PCIe) |
+| CUPTI tracing overhead | under 1% (within noise), 0 dropped records |
+| Injected regression | `compare` flagged +118.6% with exit code 3; a clean rerun stayed within 0.4% and passed |
+| Latency (single-thread chase) | L1 ~14 ns, L2 ~95 ns, DRAM ~228 ns |
+
+![gpu latency](results/gpu/latency.png)
+![transpose](results/gpu/t2048/transpose.png)
+
+Compute Sanitizer (memcheck, racecheck, synccheck): 0 errors. How it works: [docs/gpu.md](docs/gpu.md)
+
 ## How it works
 - **Pointer chasing.** Each load depends on the one before it (`p = p->next`), so the CPU can't overlap them, and the random order defeats the hardware prefetcher. What's left is raw load-to-use latency.
 - **Sattolo's algorithm.** A shuffle that always produces one single cycle, so the chase visits every node instead of getting stuck in a small loop that stays in cache.
@@ -81,12 +100,23 @@ python3 scripts/run_sweep.py --tag mybox --counters
 python3 scripts/plot.py results/mybox/latency.csv -o results/mybox/latency.png
 python3 scripts/plot_kernels.py results/mybox/kernels.csv -o results/mybox
 ```
+**GPU backend (NVIDIA, optional).** Needs the CUDA toolkit. See [docs/gpu.md](docs/gpu.md).
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCPUPROBE_ENABLE_CUDA=ON
+cmake --build build -j
+./build/cpuprobe_gpu_tests
+./build/cpuprobe gpu bench all --csv results/gpu/bench.csv
+./build/cpuprobe gpu trace --out results/gpu/trace.json     # open in ui.perfetto.dev
+```
+
 If counters fail with a permission error, run `sudo sysctl kernel.perf_event_paranoid=1` (or `scripts/setup.sh`).
 
 ## Testing and CI
-- 19 GoogleTest tests: Sattolo forms exactly one cycle, size parsing, stats, alignment, good/bad kernel pairs agree, counter sanity checks
+- 31 CPU-side GoogleTest tests: Sattolo forms exactly one cycle, size parsing, stats, alignment, good/bad kernel pairs agree, counter sanity checks, regression-detection rules, trace JSON export
+- 5 GPU tests (`cpuprobe_gpu_tests`): every transpose and SGEMM kernel against a CPU reference on odd shapes, the latency ladder, and the CUPTI tracer catching kernels, copies and their launch calls
 - Counter tests skip themselves with `GTEST_SKIP` on machines without a PMU (like GitHub's runners)
 - CI on every push: gcc and clang, Debug build with AddressSanitizer + UndefinedBehaviorSanitizer, all tests, a smoke run of every command, and a `clang-format` check
+- A CUDA 13 container job that builds the GPU backend (GitHub's runners have no GPU, so the GPU tests skip there)
 
 ## Limitations
 - These numbers come from WSL2, which is a Hyper-V VM. Counters work there on this machine, but page walks are nested (guest + host page tables), so TLB-heavy results are probably a bit worse than bare metal.
